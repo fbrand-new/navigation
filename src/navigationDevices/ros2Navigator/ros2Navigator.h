@@ -33,6 +33,7 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <nav2_msgs/action/navigate_to_pose.hpp>
 #include <nav2_msgs/action/navigate_through_poses.hpp>
+#include <nav2_msgs/action/follow_waypoints.hpp>
 #include <nav_msgs/msg/path.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <yarp/math/Math.h>
@@ -85,6 +86,7 @@ protected:
     rclcpp::Node::SharedPtr m_node{nullptr};
     rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SharedPtr client_ptr_;
     rclcpp_action::Client<nav2_msgs::action::NavigateThroughPoses>::SharedPtr nav_through_pose_client_ptr_;
+    rclcpp_action::Client<nav2_msgs::action::FollowWaypoints>::SharedPtr waypoint_follower_client_ptr_;
     rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr m_ros2Subscriber_globalPath;
     rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr m_ros2Subscriber_localPath;
     rclcpp::Subscription<nav2_msgs::action::NavigateToPose::Impl::FeedbackMessage>::SharedPtr navigation_feedback_sub_;

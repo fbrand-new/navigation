@@ -115,6 +115,7 @@ bool ros2Navigator::open(yarp::os::Searchable &config)
         m_node = NodeCreator::createNode(m_nodeName);
         client_ptr_ = rclcpp_action::create_client<nav2_msgs::action::NavigateToPose>(m_node, "navigate_to_pose");
         nav_through_pose_client_ptr_ = rclcpp_action::create_client<nav2_msgs::action::NavigateThroughPoses>(m_node, "navigate_through_poses");
+        waypoint_follower_client_ptr_ = rclcpp_action::create_client<nav2_msgs::action::FollowWaypoints>(m_node, "follow_waypoints");
         m_ros2Subscriber_globalPath = m_node->create_subscription<nav_msgs::msg::Path>(m_rosTopicName_globalPath, 10, std::bind(&ros2Navigator::globalPath_callback, this, _1));
         m_ros2Subscriber_localPath = m_node->create_subscription<nav_msgs::msg::Path>(m_rosTopicName_localPath, 10, std::bind(&ros2Navigator::localPath_callback, this, _1));
 
@@ -374,7 +375,12 @@ bool ros2Navigator::followPath(const yarp::dev::Nav2D::Map2DPath &path)
         yCWarning(ROS2_NAV) << "Action server not available after waiting for seconds.";
     }
 
-    auto goal_msg = nav2_msgs::action::NavigateThroughPoses::Goal();
+    if (!waypoint_follower_client_ptr_->wait_for_action_server())
+    {
+        yCWarning(ROS2_NAV) << "follow_waypoint action server not available after waiting for seconds.";
+    }
+
+    auto goal_msg = nav2_msgs::action::FollowWaypoints::Goal();
 
     std::vector<geometry_msgs::msg::PoseStamped> poses; // vector of 2Dposes
     for (auto location = path.cbegin(); location != path.cend(); location++){
@@ -407,8 +413,8 @@ bool ros2Navigator::followPath(const yarp::dev::Nav2D::Map2DPath &path)
 
     goal_msg.poses = poses;
     
-    auto send_goal_options = rclcpp_action::Client<nav2_msgs::action::NavigateThroughPoses>::SendGoalOptions();
-    nav_through_pose_client_ptr_->async_send_goal(goal_msg, send_goal_options);
+    auto send_goal_options = rclcpp_action::Client<nav2_msgs::action::FollowWaypoints>::SendGoalOptions();
+    waypoint_follower_client_ptr_->async_send_goal(goal_msg, send_goal_options);
     setNavigationStatus(navigation_status_preparing_before_move);
     return true;
 }
