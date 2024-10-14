@@ -160,6 +160,9 @@ bool ros2Navigator::open(yarp::os::Searchable &config)
                     return;
                 }
             });
+        
+        //TODO parameterize cmd_vel name
+        m_ros2Publisher_velocity_command = m_node->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 10);
     }
 
     bool b = this->start();
@@ -547,8 +550,12 @@ std::string ros2Navigator::getStatusAsString(NavigationStatusEnum status)
 
 bool ros2Navigator::applyVelocityCommand(double x_vel, double y_vel, double theta_vel, double timeout)
 {
-    yCDebug(ROS2_NAV) << "Not yet implemented";
-    return false;
+    auto message = geometry_msgs::msg::Twist();
+    message.linear.x = x_vel;
+    message.linear.y = y_vel;
+    message.angular.z = theta_vel;
+    yCDebug(ROS2_NAV) << "Making the robot spin!";
+    return true;
 }
 
 bool ros2Navigator::getLastVelocityCommand(double &x_vel, double &y_vel, double &theta_vel)

@@ -36,6 +36,7 @@
 #include <nav2_msgs/action/follow_waypoints.hpp>
 #include <nav_msgs/msg/path.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
+#include <geometry_msgs/msg/twist.hpp>
 #include <yarp/math/Math.h>
 #include "Ros2Spinner.h"
 #include "Ros2Utils.h"
@@ -91,6 +92,7 @@ protected:
     rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr m_ros2Subscriber_localPath;
     rclcpp::Subscription<nav2_msgs::action::NavigateToPose::Impl::FeedbackMessage>::SharedPtr navigation_feedback_sub_;
     rclcpp::Subscription<nav2_msgs::action::NavigateToPose::Impl::GoalStatusMessage>::SharedPtr navigation_goal_status_sub_;
+    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr m_ros2Publisher_velocity_command;
 
 public:
     ros2Navigator();
