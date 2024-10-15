@@ -18,6 +18,7 @@
 
 #include "ros2Navigator.h"
 #include <geometry_msgs/msg/detail/pose_stamped__struct.hpp>
+#include <yarp/os/LogComponent.h>
 
 using namespace yarp::os;
 using namespace yarp::dev;
@@ -550,10 +551,12 @@ std::string ros2Navigator::getStatusAsString(NavigationStatusEnum status)
 
 bool ros2Navigator::applyVelocityCommand(double x_vel, double y_vel, double theta_vel, double timeout)
 {
+    yCDebug(ROS2_NAV,"x: %f, y:%f, theta: %f", x_vel, y_vel, theta_vel);
     auto message = geometry_msgs::msg::Twist();
     message.linear.x = x_vel;
     message.linear.y = y_vel;
     message.angular.z = theta_vel;
+    m_ros2Publisher_velocity_command->publish(message);
     yCDebug(ROS2_NAV) << "Making the robot spin!";
     return true;
 }
