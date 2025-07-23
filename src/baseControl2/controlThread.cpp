@@ -330,6 +330,8 @@ void ControlThread::run()
     }
     else if (base_control_type == BASE_CONTROL_VELOCITY_NO_PID)
     {
+        yDebug() << "Velocity control (no PID):" << input_linear_speed << input_angular_speed << input_desired_direction;
+        yDebug() << "input_pwm_gain" << input_pwm_gain;
         double exec_pwm_gain = input_pwm_gain / 100.0 * 1.0;
         pidout_linear_throttle = input_linear_speed * exec_pwm_gain;
         pidout_angular_throttle = input_angular_speed * exec_pwm_gain;

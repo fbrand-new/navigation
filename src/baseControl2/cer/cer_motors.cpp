@@ -113,6 +113,8 @@ void CER_MotorControl::execute_speed(double appl_linear_speed, double appl_desir
         apply_motor_filter(i);
     }
 
+
+    yDebug() << "Wheel commands:" << F[0] << F[1];
     //Apply the commands
     ivel->velocityMove(0,F[0]);
     ivel->velocityMove(1,F[1]);
